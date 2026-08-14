@@ -590,9 +590,19 @@ static HRESULT STDMETHODCALLTYPE d3d11_swapchain_GetContainingOutput(IDXGISwapCh
 static HRESULT STDMETHODCALLTYPE d3d11_swapchain_GetFrameStatistics(IDXGISwapChain4 *iface,
         DXGI_FRAME_STATISTICS *stats)
 {
-    FIXME("iface %p, stats %p stub!\n", iface, stats);
+    struct d3d11_swapchain *swapchain = d3d11_swapchain_from_IDXGISwapChain4(iface);
 
-    return E_NOTIMPL;
+    FIXME("iface %p, stats %p semi-stub: no real vblank/QPC tracking, returning present count only.\n", iface, stats);
+
+    /* Real Windows always implements this (DXGI 1.0, present since Vista) and returns
+     * a filled-in struct, not E_NOTIMPL - callers reasonably don't check the HRESULT
+     * before reading *stats, and leaving it untouched crashes them on uninitialized
+     * memory. We don't track per-frame vblank/QPC timing, so report zeros for the
+     * fields we can't provide and the one real counter we do track. */
+    memset(stats, 0, sizeof(*stats));
+    stats->PresentCount = swapchain->present_count;
+
+    return S_OK;
 }
 
 static HRESULT STDMETHODCALLTYPE d3d11_swapchain_GetLastPresentCount(IDXGISwapChain4 *iface,
