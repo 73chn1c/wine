@@ -28,6 +28,8 @@
 #include "winbase.h"
 #include "winternl.h"
 #include "winnls.h"
+#include "winerror.h"
+#include "winreg.h"
 #include "wingdi.h"
 #include "winuser.h"
 #define PSAPI_VERSION 1  /* avoid K32 function remapping */
@@ -167,6 +169,22 @@ void WINAPI DECLSPEC_HOTPATCH FatalAppExitW( UINT action, LPCWSTR str )
 BOOL WINAPI IsDebuggerPresent(void)
 {
     return NtCurrentTeb()->Peb->BeingDebugged;
+}
+
+
+/***********************************************************************
+ *           IsDeveloperModeEnabled   (kernelbase.@)
+ */
+BOOL WINAPI IsDeveloperModeEnabled(void)
+{
+    DWORD value = 0, size = sizeof(value);
+
+    if (RegGetValueW( HKEY_LOCAL_MACHINE,
+                       L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock",
+                       L"AllowDevelopmentWithoutDevLicense", RRF_RT_REG_DWORD, NULL, &value, &size ))
+        return FALSE;
+
+    return !!value;
 }
 
 

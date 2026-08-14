@@ -1,0 +1,7 @@
+MODULE  = windows.internal.system.profile.regionpolicyevaluator.dll
+IMPORTS = combase
+
+SOURCES = \
+	classes.idl \
+	main.c \
+	windows.internal.system.profile.idl

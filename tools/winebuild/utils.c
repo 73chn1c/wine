@@ -181,7 +181,7 @@ static const char *find_clang_tool( struct strarray clang, const char *tool )
     if (verbose) strarray_add( &args, "-v" );
 
     sout = dup( fileno(stdout) );
-    freopen( out, "w", stdout );
+    if (!freopen( out, "w", stdout )) return NULL;
     spawn( args );
     if (sout >= 0)
     {

@@ -2164,7 +2164,8 @@ static raw_data_t *load_file(string_t *filename, language_t lang)
 	if (rd->size)
 	{
 		rd->data = xmalloc(rd->size);
-		fread(rd->data, rd->size, 1, fp);
+		if (fread(rd->data, rd->size, 1, fp) != 1)
+			yyerror("Failed to read resource file");
 	}
 	else rd->data = NULL;
 	fclose(fp);

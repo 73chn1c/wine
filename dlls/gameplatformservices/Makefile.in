@@ -1,0 +1,4 @@
+MODULE    = gameplatformservices.dll
+
+SOURCES = \
+	main.c

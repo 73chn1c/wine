@@ -4773,7 +4773,7 @@ int main( int argc, char *argv[] )
 
     atexit( cleanup_files );
     init_signals( exit_on_signal );
-    getcwd( cwd, sizeof(cwd) );
+    if (!getcwd( cwd, sizeof(cwd) )) fatal_perror( "getcwd" );
 
     for (i = 0; i < HASH_SIZE; i++) list_init( &files[i] );
     for (i = 0; i < HASH_SIZE; i++) list_init( &global_includes[i] );

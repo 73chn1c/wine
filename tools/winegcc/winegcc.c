@@ -474,9 +474,9 @@ static int try_link( struct strarray link_tool, const char *cflags )
     strarray_add( &link, in );
 
     sout = dup( fileno(stdout) );
-    freopen( err, "w", stdout );
+    if (!freopen( err, "w", stdout )) error( "cannot redirect stdout to %s\n", err );
     serr = dup( fileno(stderr) );
-    freopen( err, "w", stderr );
+    if (!freopen( err, "w", stderr )) error( "cannot redirect stderr to %s\n", err );
     ret = spawn( link, 1 );
     if (sout >= 0)
     {
@@ -1030,9 +1030,9 @@ static const char *find_libgcc(void)
     strarray_add( &link, "-print-libgcc-file-name" );
 
     sout = dup( fileno(stdout) );
-    freopen( out, "w", stdout );
+    if (!freopen( out, "w", stdout )) error( "cannot redirect stdout to %s\n", out );
     serr = dup( fileno(stderr) );
-    freopen( err, "w", stderr );
+    if (!freopen( err, "w", stderr )) error( "cannot redirect stderr to %s\n", err );
     ret = spawn( link, 1 );
     if (sout >= 0)
     {

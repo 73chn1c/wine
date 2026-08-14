@@ -1457,7 +1457,8 @@ void make_builtin_files( struct strarray files )
         {
             if (header.e_lfanew < sizeof(header) + sizeof(builtin_signature))
                 fatal_error( "%s: Not enough space (%x) for Wine signature\n", file, header.e_lfanew );
-            write( fd, builtin_signature, sizeof(builtin_signature) );
+            if (write( fd, builtin_signature, sizeof(builtin_signature) ) != sizeof(builtin_signature))
+                fatal_perror( "%s: Failed to write Wine signature", file );
 
             if (prefer_native)
             {
@@ -1468,7 +1469,8 @@ void make_builtin_files( struct strarray files )
                 {
                     dll_charact |= IMAGE_DLLCHARACTERISTICS_PREFER_NATIVE;
                     lseek( fd, pos, SEEK_SET );
-                    write( fd, &dll_charact, sizeof(dll_charact) );
+                    if (write( fd, &dll_charact, sizeof(dll_charact) ) != sizeof(dll_charact))
+                        fatal_perror( "%s: Failed to write DllCharacteristics", file );
                 }
             }
         }
@@ -1543,7 +1545,7 @@ static void fixup_elf32( const char *name, int fd, void *header, size_t header_s
         }
     }
     lseek( fd, phdr->p_offset, SEEK_SET );
-    write( fd, dyn, phdr->p_filesz );
+    if (write( fd, dyn, phdr->p_filesz ) != phdr->p_filesz) return;
 }
 
 static void fixup_elf64( const char *name, int fd, void *header, size_t header_size )
@@ -1612,7 +1614,7 @@ static void fixup_elf64( const char *name, int fd, void *header, size_t header_s
         }
     }
     lseek( fd, phdr->p_offset, SEEK_SET );
-    write( fd, dyn, phdr->p_filesz );
+    if (write( fd, dyn, phdr->p_filesz ) != phdr->p_filesz) return;
 }
 
 /*******************************************************************

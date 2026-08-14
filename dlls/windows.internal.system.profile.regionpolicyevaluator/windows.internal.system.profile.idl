@@ -1,0 +1,63 @@
+/*
+ * Windows.Internal.System.Profile.RegionPolicyEvaluator
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
+ */
+
+#pragma makedep header
+#pragma winrt ns_prefix
+
+import "inspectable.idl";
+import "windowscontracts.idl";
+
+namespace Windows.Internal.System.Profile {
+    typedef enum PolicyState PolicyState;
+    interface IRegionPolicyEvaluatorStatics;
+    runtimeclass RegionPolicyEvaluator;
+
+    /* Undocumented, internal-only Microsoft namespace. This enum, the
+     * IRegionPolicyEvaluatorStatics interface (name, IID and method
+     * signatures) below are not guessed - they come from
+     * riverar/regionpolicyevaluator-skeleton (MIT), an independently
+     * published reverse-engineering project for exactly this component:
+     * https://github.com/riverar/regionpolicyevaluator-skeleton
+     */
+    enum PolicyState
+    {
+        Unknown  = 0,
+        Enabled  = 1,
+        Disabled = 2,
+    };
+
+    [
+        exclusiveto(Windows.Internal.System.Profile.RegionPolicyEvaluator),
+        uuid(1ca20398-c1d9-5f12-b40a-6528206e3b5e)
+    ]
+    interface IRegionPolicyEvaluatorStatics : IInspectable
+    {
+        HRESULT EvaluatePolicyState( [in] GUID policy, [out, retval] PolicyState *value );
+        HRESULT ForceEvaluatePolicyState( [in] GUID policy, [out, retval] PolicyState *value );
+    }
+
+    [
+        contract(Windows.Foundation.UniversalApiContract, 1.0),
+        marshaling_behavior(agile),
+        static(Windows.Internal.System.Profile.IRegionPolicyEvaluatorStatics, Windows.Foundation.UniversalApiContract, 1.0),
+        threading(both)
+    ]
+    runtimeclass RegionPolicyEvaluator
+    {
+    }
+}
